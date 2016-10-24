@@ -1,12 +1,33 @@
-var express = require('express');
+'use strict';
+
 var chalk = require('chalk');
-var app = express();
 
-app.use(express.static('public'));
+// Requires in ./db/index.js -- which returns a promise that represents
+// sequelize syncing its models to the postgreSQL database.
+var startDb = require('./db');
 
-app.use('/api', require('./routes'));
+// Create a node server instance! cOoL!
+var server = require('http').createServer();
 
-app.listen(3000, function () {
-  console.log(chalk.blue('Express server is up on port', chalk.magenta(3000)));
-});
+var createApplication = function () {
+  var app = require('./routes');
+  server.on('request', app); // Attach the Express application.
+};
 
+var startServer = function () {
+
+  var PORT = 1337;
+
+  server.listen(PORT, function () {
+    console.log(chalk.blue('Server started on port', chalk.magenta(PORT)));
+  });
+
+};
+
+startDb
+  .then(createApplication)
+  .then(startServer)
+  .catch(function (err) {
+    console.error(chalk.red(err.stack));
+    process.exit(1);
+  });
