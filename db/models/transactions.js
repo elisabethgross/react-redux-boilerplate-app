@@ -11,3 +11,5 @@ var Transactions = db.define('transactions', {
     allowNull: false
   }
 });
+
+module.exports = Transactions;
