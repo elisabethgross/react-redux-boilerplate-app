@@ -4,7 +4,8 @@ var path = require('path');
 var app = express();
 module.exports = app;
 
-app.use(express.static(path.join(__dirname, '../public')));
+app.use(require('./logging.middleware'));
+app.use(require('./statics.middleware'));
 
 app.use('/api', require('./api'));
 
